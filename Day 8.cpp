@@ -51,15 +51,16 @@ int findParent(int node) {
   return parents[node] = findParent(parents[node]);
 }
 
-void unionNodes(int n1, int n2) {
+bool unionNodes(int n1, int n2) {
   int p1 = findParent(n1);
   int p2 = findParent(n2);
 
-  if (p1 == p2) return;
+  if (p1 == p2) return false;
 
   if (ranks[p1] < ranks[p2]) swap(p1, p2);
   else if (ranks[p1] == ranks[p2]) ranks[p1]++;
   parents[p2] = p1;
+  return true;
 }
 
 int playground(vector<vector<int>> &coordinates, int k) {
@@ -80,10 +81,16 @@ int playground(vector<vector<int>> &coordinates, int k) {
 
   initUnionFind(coordinates.size());
 
+  long long x1, x2;
 
-  for (int i = 0; i < k; i++) {
-    unionNodes(all[i].second.first, all[i].second.second);
+  for (int i = 0; i < all.size(); i++) {
+    if (unionNodes(all[i].second.first, all[i].second.second)) {
+      x1 = coordinates[all[i].second.first][0];
+      x2 = coordinates[all[i].second.second][0];
+    }
   }
+
+  cout << x1 << "*" << x2 << " = " << x1*x2 << endl;
 
   unordered_map<int, int> clusters;
   for (int i = 0; i < coordinates.size(); i++) {
